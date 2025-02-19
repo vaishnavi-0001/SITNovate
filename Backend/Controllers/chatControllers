@@ -1,0 +1,64 @@
+import Chat from "../Models/chatSchema.js";
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// 📌 Send Message & Get AI Response
+export const sendMessage = async (req, res) => {
+  try {
+    const { projectId, message } = req.body;
+    const senderId = req.user.id; // Authenticated user
+
+    if (!message || message.trim() === "") {
+      return res.status(400).json({ success: false, error: "Message cannot be empty" });
+    }
+
+    // Save user message to DB
+    const newMessage = new Chat({ projectId, senderId, message });
+    await newMessage.save();
+
+    // Call AI API for response
+    const aiResponse = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4",  // or use "deepseek-chat" for DeepSeek API
+        messages: [{ role: "user", content: message }],
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${process.env.API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const aiMessage = aiResponse.data.choices[0].message.content;
+
+    // Save AI response to DB
+    const aiReply = new Chat({ projectId, senderId: "AI", message: aiMessage });
+    await aiReply.save();
+
+    res.status(200).json({ success: true, reply: aiMessage });
+  } catch (error) {
+    console.error("Error in sendMessage:", error);
+    res.status(500).json({ success: false, error: "Failed to fetch AI response" });
+  }
+};
+
+// 📌 Get Chat History
+export const getChatHistory = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const userId = req.user.id; // Authenticated user
+
+    const chatHistory = await Chat.find({ projectId, senderId: { $in: [userId, "AI"] } })
+      .sort({ timestamp: 1 });
+
+    res.status(200).json({ success: true, chatHistory });
+  } catch (error) {
+    console.error("Error in getChatHistory:", error);
+    res.status(500).json({ success: false, error: "Error fetching chat history" });
+  }
+};
+module.export = { sendMessage, getChatHistory };

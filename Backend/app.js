@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AuthRouter = require('./Routers/userRouter');
+const userRouter = require('./Routers/userRouter');
 const { dbConnection } = require('./database/dbConnection');  // Importing the dbConnection function
 
 
@@ -18,7 +18,7 @@ dbConnection();  // Connect to MongoDB
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/auth', AuthRouter);
+app.use('/auth', userRouter);
 //app.use('/products', ProductRouter);
 
 app.listen(PORT, () => {
