@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const dbConnection = () => {
-    const uri = "mongodb+srv://salonizade09:NRK3iivP0JVWDrac@cluster0.z1vgq.mongodb.net/StreamArena"
+    const uri = "mongodb+srv://salonizade09:DrxYQLI99qBOagfU@cluster0.19hcg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
     if (!uri) {
         console.error("Error: MONGO_URI is not defined in the environment variables.");
@@ -10,7 +10,7 @@ const dbConnection = () => {
     }
 
     mongoose.connect(uri, {
-        dbName: "StreamArena",
+        dbName: "ZeroAi",
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
