@@ -3,6 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 
 
+// Edit: IG Tejas is seriously doing great lol ^^
+
 function App() {
   const [count, setCount] = useState(0)
 
