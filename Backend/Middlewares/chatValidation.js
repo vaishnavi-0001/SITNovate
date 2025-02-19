@@ -1,26 +1,24 @@
-import { body, validationResult } from "express-validator";
+const Joi = require('joi');
 
-// 📌 Chat Message Validation Middleware
-export const validateChatMessage = [
-  body("message")
-    .trim()
-    .notEmpty()
-    .withMessage("Message cannot be empty")
-    .isLength({ min: 1, max: 500 })
-    .withMessage("Message should be between 1 to 500 characters"),
+const chatValidation = (req, res, next) => {
+  const schema = Joi.object({
+    message: Joi.string().min(1).max(500).required().messages({
+      "string.empty": "Message cannot be empty",
+      "string.min": "Message should be at least 1 character long",
+      "string.max": "Message should not exceed 500 characters",
+    }),
+    
+    projectId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+      "string.empty": "Project ID is required",
+      "string.pattern.base": "Invalid Project ID format",
+    }),
+  });
 
-  body("projectId")
-    .trim()
-    .notEmpty()
-    .withMessage("Project ID is required")
-    .isMongoId()
-    .withMessage("Invalid Project ID format"),
-
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
-    }
-    next();
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: 'Bad request', error: error.details[0].message });
   }
-];
+  next();
+};
+
+module.exports = { chatValidation };

@@ -2,8 +2,10 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const userRouter = require('./Routers/userRouter');
+const chatRouter = require('./Routers/chatRouters');
 const { dbConnection } = require('./database/dbConnection');  // Importing the dbConnection function
 
 
@@ -19,7 +21,8 @@ dbConnection();  // Connect to MongoDB
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/auth', userRouter);
-//app.use('/products', ProductRouter);
+app.use('/chat', chatRouter);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
