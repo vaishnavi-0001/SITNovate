@@ -13,7 +13,7 @@ const Logo = () => {
 }
 
 const StyledWrapper = styled.div`
-
+    z-index: 1000;
 
   .loader {
     position: fixed;

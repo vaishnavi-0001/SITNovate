@@ -1,10 +1,11 @@
 import 'react'
-import Message from '../Components/Message';
-
+import Modes from '../Components/Modes.jsx';
+import Logo from '../Components/Logo.jsx';
 const Chat = () => {
   return (
     <>
-        <Message/>
+        <Modes/>
+        <Logo/>
     </>
   )
 }

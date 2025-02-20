@@ -37,7 +37,7 @@ const SignupForm = () => {
         if (response.ok) {
             alert("Signup successful!");
             setIsVisible(false);
-              navigate('/');
+              navigate('/modes');
             
         } else {
             alert(result.message || "Signup failed");
