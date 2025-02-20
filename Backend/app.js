@@ -2,10 +2,10 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const userRouter = require('./Routers/userRouter');
-const chatRouter = require('./Routers/chatRouters');
+// const chatRouters = require('./Routers/chatRouter');
 const { dbConnection } = require('./database/dbConnection');  // Importing the dbConnection function
 
 
@@ -21,7 +21,7 @@ dbConnection();  // Connect to MongoDB
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/auth', userRouter);
-app.use('/chat', chatRouter);
+// app.use('/chat', chatRouters);
 
 
 app.listen(PORT, () => {

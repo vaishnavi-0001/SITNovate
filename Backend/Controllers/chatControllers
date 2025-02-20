@@ -1,64 +1,60 @@
-import Chat from "../Models/chatSchema.js";
-import axios from "axios";
-import dotenv from "dotenv";
+// const Chat = require("../Models/chatSchema");
+// const { OpenAI } = require("openai");
+// const dotenv = require("dotenv");
 
-dotenv.config();
+// dotenv.config();
 
-// 📌 Send Message & Get AI Response
-export const sendMessage = async (req, res) => {
-  try {
-    const { projectId, message } = req.body;
-    const senderId = req.user.id; // Authenticated user
+// // Initialize OpenAI instance
+// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    if (!message || message.trim() === "") {
-      return res.status(400).json({ success: false, error: "Message cannot be empty" });
-    }
+// // 📌 Send Message & Get AI Response
+// const sendMessage = async (req, res) => {
+//   try {
+//     const { projectId, message } = req.body;
+//     const senderId = req.user.id; // Authenticated user
 
-    // Save user message to DB
-    const newMessage = new Chat({ projectId, senderId, message });
-    await newMessage.save();
+//     if (!message || !message.trim()) {
+//       return res.status(400).json({ success: false, error: "Message cannot be empty" });
+//     }
 
-    // Call AI API for response
-    const aiResponse = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4",  // or use "deepseek-chat" for DeepSeek API
-        messages: [{ role: "user", content: message }],
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+//     // Save user message to DB
+//     const newMessage = new Chat({ projectId, senderId, message });
+//     await newMessage.save();
 
-    const aiMessage = aiResponse.data.choices[0].message.content;
+//     // ✅ Call OpenAI API for response
+//     const aiResponse = await openai.chat.completions.create({
+//       model: "gpt-4-turbo", // Choose a suitable model (gpt-3.5-turbo or gpt-4-turbo)
+//       messages: [{ role: "user", content: message }],
+//     });
 
-    // Save AI response to DB
-    const aiReply = new Chat({ projectId, senderId: "AI", message: aiMessage });
-    await aiReply.save();
+//     const aiMessage = aiResponse.choices[0]?.message?.content || "AI response not available";
 
-    res.status(200).json({ success: true, reply: aiMessage });
-  } catch (error) {
-    console.error("Error in sendMessage:", error);
-    res.status(500).json({ success: false, error: "Failed to fetch AI response" });
-  }
-};
+//     // Save AI response to DB
+//     const aiReply = new Chat({ projectId, senderId: "AI", message: aiMessage });
+//     await aiReply.save();
 
-// 📌 Get Chat History
-export const getChatHistory = async (req, res) => {
-  try {
-    const { projectId } = req.params;
-    const userId = req.user.id; // Authenticated user
+//     res.status(200).json({ success: true, reply: aiMessage });
+//   } catch (error) {
+//     console.error("Error in sendMessage:", error);
+//     res.status(500).json({ success: false, error: "Failed to fetch AI response" });
+//   }
+// };
 
-    const chatHistory = await Chat.find({ projectId, senderId: { $in: [userId, "AI"] } })
-      .sort({ timestamp: 1 });
+// // 📌 Get Chat History
+// const getChatHistory = async (req, res) => {
+//   try {
+//     const { projectId } = req.params;
+//     const userId = req.user.id; // Authenticated user
 
-    res.status(200).json({ success: true, chatHistory });
-  } catch (error) {
-    console.error("Error in getChatHistory:", error);
-    res.status(500).json({ success: false, error: "Error fetching chat history" });
-  }
-};
-module.export = { sendMessage, getChatHistory };
+//     // ✅ Fetch chat messages only for the given project & user
+//     const chatHistory = await Chat.find({ projectId, senderId: { $in: [userId, "AI"] } })
+//       .sort({ createdAt: 1 });
+
+//     res.status(200).json({ success: true, chatHistory });
+//   } catch (error) {
+//     console.error("Error in getChatHistory:", error);
+//     res.status(500).json({ success: false, error: "Error fetching chat history" });
+//   }
+// };
+
+// module.exports = { sendMessage, getChatHistory };
