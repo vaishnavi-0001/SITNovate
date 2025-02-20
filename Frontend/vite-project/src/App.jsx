@@ -6,13 +6,11 @@ import Login from './Pages/Login.jsx';
 import Sign from './Pages/Sign.jsx';
 import Chat from './Pages/Chat.jsx';
 import Message from './Pages/Message.jsx';
-import { generateText } from './Components/HuggingFaceAPI.jsx'; 
-
-
+import H from './Pages/H.jsx';
 
 const App = () => {
 
-  
+
   return (
     <>
       <BrowserRouter>
@@ -22,6 +20,7 @@ const App = () => {
         <Route path='/signup' element={ <Sign />} />
         <Route  path='/chat' element={ <Chat />} />
         <Route path='/messages' element={<Message/>} />
+        <Route path='/home' element={<H/>} />
       </Routes>
       </BrowserRouter>
     </>
